@@ -1,5 +1,4 @@
 twitter-to-kafka-service:
-  enable-v2-tweets: true
   twitter-keywords:
     -Java
     -Microservice
@@ -7,7 +6,9 @@ twitter-to-kafka-service:
     -Kafka
     -Elasticsearch
   welcome-message: 'Welcome to the Twitter Kafka Service'
-  twitter-v2-baser-url: https://api.twitter.com/2/tweets/search/stream?tweet.fields=created_at&expancion=author_id
-  twitter-v2-rules-baser-url: https://api.twitter.com/2/tweets/search/stream/rules
-  twitter-v2-beare-token: ${TWITTER_BEARER_TOKEN} #AAAAAAAAAAAAAAAAAAAAACDPwQEAAAAAh1spzaIOXzw5Pr3fsbGpPg7z7HY%3DEqVtYDLxPlsqq7Mfppm2pB4DTrY4clbdUywI2q9OiCEiZTfmpG
+  enable-v2-tweets: true
+  enable-mock-tweets: false
+  twitter-v2-base-url: https://api.twitter.com/2/tweets/search/stream?tweet.fields=created_at&expancion=author_id
+  twitter-v2-rules-base-url: https://api.twitter.com/2/tweets/search/stream/rules
+  twitter-v2-bearer-token: ${TWITTER_BEARER_TOKEN} #AAAAAAAAAAAAAAAAAAAAACDPwQEAAAAAh1spzaIOXzw5Pr3fsbGpPg7z7HY%3DEqVtYDLxPlsqq7Mfppm2pB4DTrY4clbdUywI2q9OiCEiZTfmpG
 
