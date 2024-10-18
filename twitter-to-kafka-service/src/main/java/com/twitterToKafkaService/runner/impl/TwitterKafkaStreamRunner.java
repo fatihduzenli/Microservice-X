@@ -1,13 +1,12 @@
-package com.runner.impl;
+package com.twitterToKafkaService.runner.impl;
 
-import com.config.TwitterToKafkaServiceConfigData;
-import com.listener.TwitterKafkaStatusListener;
-import com.runner.StreamRunner;
+import com.twitterToKafkaService.config.TwitterToKafkaServiceConfigData;
+import com.twitterToKafkaService.listener.TwitterKafkaStatusListener;
+import com.twitterToKafkaService.runner.StreamRunner;
 import jakarta.annotation.PreDestroy;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 import twitter4j.FilterQuery;
 import twitter4j.TwitterException;
@@ -17,6 +16,7 @@ import twitter4j.TwitterStreamFactory;
 import java.util.Arrays;
 
 @Component
+@ConditionalOnExpression("${twitter-to-kafka-service.enable-v2-tweets} && not ${twitter-to-kafka-service.enable-mock-tweets}")
 public class TwitterKafkaStreamRunner implements StreamRunner {
 
     private static final Logger LOG = LoggerFactory.getLogger(TwitterKafkaStreamRunner.class); //This line creates a logger named LOG using Logback or any SLF4J-compatible logging library. This logger will be used to log messages throughout the class.
