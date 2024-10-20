@@ -1,7 +1,7 @@
-package com.twitterToKafkaService.runner.impl;
+package com.twitter.to.kafka.service.runner.impl;
 
-import com.twitterToKafkaService.config.TwitterToKafkaServiceConfigData;
-import com.twitterToKafkaService.listener.TwitterKafkaStatusListener;
+import com.microservices.demo.config.TwitterToKafkaServiceConfigData;
+import com.twitter.to.kafka.service.listener.TwitterKafkaStatusListener;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -19,7 +19,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import twitter4j.Status;
 import twitter4j.TwitterException;
@@ -39,34 +38,44 @@ import java.util.Map;
 
 @Component
 @ConditionalOnExpression("${twitter-to-kafka-service.enable-v2-tweets} && not ${twitter-to-kafka-service.enable-mock-tweets}")
+//@ConditionalOnProperty(name = "twitter-to-kafka-service.enable-v2-tweets", havingValue = "true", matchIfMissing = true)
 public class TwitterV2StreamHelper {
+
     private static final Logger LOG = LoggerFactory.getLogger(TwitterV2StreamHelper.class);
+
     private final TwitterToKafkaServiceConfigData twitterToKafkaServiceConfigData;
+
     private final TwitterKafkaStatusListener twitterKafkaStatusListener;
 
-    private static final String tweetAsRawJson = "{" + //This string represents the raw JSON format of a tweet.
+    private static final String tweetAsRawJson = "{" +
             "\"created_at\":\"{0}\"," +
             "\"id\":\"{1}\"," +
             "\"text\":\"{2}\"," +
             "\"user\":{\"id\":\"{3}\"}" +
             "}";
-    private static final String TWITTER_STATUS_DATE_FORMAT = "EEE MMM dd HH:mm:ss zzz yyyy"; //This string represents the date format used in Twitter status messages.
 
-    public TwitterV2StreamHelper(TwitterToKafkaServiceConfigData twitterToKafkaServiceConfigData, TwitterKafkaStatusListener twitterKafkaStatusListener) {
+    private static final String TWITTER_STATUS_DATE_FORMAT = "EEE MMM dd HH:mm:ss zzz yyyy";
+
+    public TwitterV2StreamHelper(TwitterToKafkaServiceConfigData twitterToKafkaServiceConfigData,
+                                 TwitterKafkaStatusListener twitterKafkaStatusListener) {
         this.twitterToKafkaServiceConfigData = twitterToKafkaServiceConfigData;
         this.twitterKafkaStatusListener = twitterKafkaStatusListener;
     }
-    void connectStream(String bearerToken) throws IOException, URISyntaxException, JSONException {//This method is responsible for connecting to the Twitter stream using the provided bearer token.
 
-        HttpClient httpClient = HttpClients.custom() //Creates an instance of HttpClient using the Apache HttpClient library.
-                .setDefaultRequestConfig(RequestConfig.custom() //Sets the default request configuration for the HttpClient instance.
-                        .setCookieSpec(CookieSpecs.STANDARD).build()) //Specifies the cookie specification to use for the HttpClient instance.
+    /*
+     * This method calls the filtered stream endpoint and streams Tweets from it
+     * */
+    void connectStream(String bearerToken) throws IOException, URISyntaxException, TwitterException, JSONException {
+
+        HttpClient httpClient = HttpClients.custom()
+                .setDefaultRequestConfig(RequestConfig.custom()
+                        .setCookieSpec(CookieSpecs.STANDARD).build())
                 .build();
 
-        URIBuilder uriBuilder = new URIBuilder(twitterToKafkaServiceConfigData.getTwitterV2baseUrl()); //Creates a new URIBuilder instance with the base URL for the Twitter V2 API.
+        URIBuilder uriBuilder = new URIBuilder(twitterToKafkaServiceConfigData.getTwitterV2BaseUrl());
 
-        HttpGet httpGet = new HttpGet(uriBuilder.build()); //Creates an HTTP GET request with the URI built from the URIBuilder.
-        httpGet.setHeader("Authorization", String.format("Bearer %s", bearerToken)); //Sets the Authorization header with the bearer token for authentication.
+        HttpGet httpGet = new HttpGet(uriBuilder.build());
+        httpGet.setHeader("Authorization", String.format("Bearer %s", bearerToken));
 
         HttpResponse response = httpClient.execute(httpGet);
         HttpEntity entity = response.getEntity();
@@ -210,17 +219,19 @@ public class TwitterV2StreamHelper {
         }
     }
 
-    private String getFormattedTweet(String data) {
-        JSONObject jsonData = (JSONObject)new JSONObject(data).get("data");
-
-        String[] params = new String[]{
-                ZonedDateTime.parse(jsonData.get("created_at").toString()).withZoneSameInstant(ZoneId.of("UTC"))
-                        .format(DateTimeFormatter.ofPattern(TWITTER_STATUS_DATE_FORMAT, Locale.ENGLISH)),
-                jsonData.get("id").toString(),
-                jsonData.get("text").toString().replaceAll("\"","\\\\\""),
-                jsonData.get("author_id").toString(),
-        };
-        return formatTweetAsJsonWithParams(params);
+    public String getFormattedTweet(String jsonString) {
+        try {
+            LOG.info("Parsing JSON string: {}", jsonString);
+            if (!jsonString.trim().startsWith("{")) {
+                throw new IllegalArgumentException("Invalid JSON string: " + jsonString);
+            }
+            JSONObject jsonObject = new JSONObject(jsonString);
+            // Process the JSON object as needed
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            LOG.error("Failed to parse JSON string: {}", jsonString, e);
+            throw new IllegalArgumentException("Invalid JSON string: " + jsonString, e);
+        }
     }
 
     private String formatTweetAsJsonWithParams(String[] params) {
@@ -231,7 +242,5 @@ public class TwitterV2StreamHelper {
         }
         return tweet;
     }
-
-    // Implement logic to stream tweets using Twitter V2 API
 
 }
