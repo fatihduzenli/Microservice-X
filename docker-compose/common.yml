@@ -1,0 +1,5 @@
+version: '3.7'
+
+networks:
+  application:       # application is the network name
+    driver: bridge # bridge is the default network driver

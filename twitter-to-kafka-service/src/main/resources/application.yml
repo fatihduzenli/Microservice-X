@@ -6,9 +6,12 @@ twitter-to-kafka-service:
     -Kafka
     -Elasticsearch
   welcome-message: 'Welcome to the Twitter Kafka Service'
-  enable-v2-tweets: true
-  enable-mock-tweets: false
-  twitter-v2-base-url: https://api.twitter.com/2/tweets/search/stream?tweet.fields=created_at&expancion=author_id
+  enable-v2-tweets: false
+  enable-mock-tweets: true
+  twitter-v2-base-url: https://api.twitter.com/2/tweets/search/stream
   twitter-v2-rules-base-url: https://api.twitter.com/2/tweets/search/stream/rules
   twitter-v2-bearer-token: ${TWITTER_BEARER_TOKEN} #AAAAAAAAAAAAAAAAAAAAACDPwQEAAAAAh1spzaIOXzw5Pr3fsbGpPg7z7HY%3DEqVtYDLxPlsqq7Mfppm2pB4DTrY4clbdUywI2q9OiCEiZTfmpG
+  mock-min-tweet-length: 10
+  mock-max-tweet-length: 280
+  mock-sleep-ms: 1000
 
