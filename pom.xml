@@ -20,6 +20,7 @@
         <module>kafka-admin</module>
         <module>kafka-model</module>
         <module>kafka-producer</module>
+        <module>common-config</module>
     </modules>
     <packaging>pom</packaging>
     <url/>
@@ -46,6 +47,8 @@
         <httpclient.version>4.5.13</httpclient.version>
         <json.version>20220320</json.version>
         <avro.version>1.12.0</avro.version>
+        <spring-kafka.version>3.2.4</spring-kafka.version>
+        <spring-retry.version>2.0.9</spring-retry.version>
     </properties>
 
     <dependencyManagement>
@@ -53,6 +56,11 @@
             <dependency>
                 <groupId>com.microservice.demo</groupId>
                 <artifactId>app-config-data</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microservice.demo</groupId>
+                <artifactId>common-config</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -117,6 +125,16 @@
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro</artifactId>
                 <version>${avro.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.kafka</groupId>
+                <artifactId>spring-kafka</artifactId>
+                <version>${spring-kafka.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.retry</groupId>
+                <artifactId>spring-retry</artifactId>
+                <version>${spring-retry.version}</version>
             </dependency>
 
 
