@@ -169,10 +169,10 @@ Mantık: Bu yöntem, Kafka’da yeni konular oluşturmak için bir deneme mekani
 Bu özel bir yardımcı yöntemdir ve yeni konuları oluşturmak için asıl iş burada yapılır.
 
 	•	İlk olarak, Kafka yapılandırma verilerinden (kafkaConfigData) oluşturulması gereken konu isimlerini alır.
-	•	Her bir konu için NewTopic nesneleri oluşturulur, bu nesneler konu ismi, bölüm sayısı (partitions) ve çoğaltma faktörü (replicationFactor) içerir.
-	•	Son olarak, adminClient.createTopics() ile Kafka’ya bu konuların oluşturulması için bir istek yapılır.
+	•	Her bir topic için NewTopic nesneleri oluşturulur, bu nesneler topic ismi, bölüm sayısı (partitions) ve çoğaltma faktörü (replicationFactor) içerir.
+	•	Son olarak, adminClient.createTopics() ile Kafka’ya bu topiclerin oluşturulması için bir istek yapılır.
 
-Mantık: Belirtilen konuları Kafka üzerinde oluşturur ve retryContext ile deneme sayısını takip eder.
+Mantık: Belirtilen topicleri Kafka üzerinde oluşturur ve retryContext ile deneme sayısını takip eder.
 
 3. checkSchemaRegistry():
 
@@ -207,7 +207,7 @@ Mantık: Her bir konunun Kafka’da oluşturulup oluşturulmadığını kontrol 
 
 Bu yöntem, verilen konu isminin Kafka’da mevcut olup olmadığını kontrol eder.
 
-	•	Eğer mevcut konular listesi null ise, konu oluşturulmamış demektir.
+	•	Eğer mevcut topic listesi null ise, konu oluşturulmamış demektir.
 	•	Konular arasında belirtilen isimde bir konu olup olmadığını kontrol eder.
 
 Mantık: Belirtilen konu isminin mevcut Kafka konuları arasında olup olmadığını doğrular.
