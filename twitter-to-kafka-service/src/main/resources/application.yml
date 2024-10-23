@@ -31,3 +31,23 @@ kafka-config:
     - twitter_topic
   num-of-partitions: 3
   replication-factor: 3
+
+kafka-producer-config:
+  key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
+  value-serializer-class: io.confluent.kafka.serializers.KafkaAvroSerializer
+  batch-size: 16384
+  compression-type: snappy
+  acks: all
+  batch-size-boost-factor: 100
+  linger-ms: 5
+  request-timeout-ms: 60000
+  retry-count: 5
+#1. **`key-serializer-class`**: Specifies the class used to serialize the key of the Kafka message. In this case, it is set to `org.apache.kafka.common.serialization.StringSerializer`, which means the key will be serialized as a string.
+#2. **`value-serializer-class`**: Specifies the class used to serialize the value of the Kafka message. Here, it is set to `io.confluent.kafka.serializers.KafkaAvroSerializer`, which means the value will be serialized using Avro.
+#3. **`batch-size`**: Defines the size (in bytes) of the batch of records sent to the Kafka broker. A larger batch size can improve throughput.
+#4. **`compression-type`**: Specifies the compression type for the messages. In this case, it is set to `snappy`, which is a fast compression algorithm.
+#5. **`acks`**: Determines the number of acknowledgments the producer requires the leader to have received before considering a request complete. `all` means the leader will wait for the full set of in-sync replicas to acknowledge the record.
+#6. **`batch-size-boost-factor`**: This is a custom property (not a standard Kafka property) likely used to dynamically adjust the batch size based on some factor.
+#7. **`linger-ms`**: The amount of time to wait before sending a batch of records. This can be used to increase the batch size by adding a small delay.
+#8. **`request-timeout-ms`**: The maximum amount of time the producer will wait for a response from the broker before timing out.
+#9. **`retry-count`**: The number of retries the producer will attempt if a send fails. This helps in handling transient errors.
